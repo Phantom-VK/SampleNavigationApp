@@ -23,6 +23,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.navigationsampleapp.ui.theme.NavigationSampleAppTheme
 
 class MainActivity : ComponentActivity() {
@@ -34,8 +37,26 @@ class MainActivity : ComponentActivity() {
                 Surface(
                     modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
                 ) {
-                    FirstPreview()
+                    MyApp()
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun MyApp(){
+    val navController = rememberNavController()
+    NavHost(navController = navController, startDestination = "firstscreen" ){
+        composable("firstscreen"){
+            FirstScreen {
+                navController.navigate("secondscreen")
+            }
+
+        }
+        composable("secondscreen"){
+            SecondScreen {
+                navController.navigate("firstscreen")
             }
         }
     }
