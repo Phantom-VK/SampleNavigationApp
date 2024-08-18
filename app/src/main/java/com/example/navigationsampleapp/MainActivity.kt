@@ -13,14 +13,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.navigationsampleapp.ui.theme.NavigationSampleAppTheme
 
+/**
+ * MainActivity sets up the content view and applies the app theme.
+ */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             NavigationSampleAppTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     MyApp()
                 }
@@ -29,24 +32,27 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * MyApp sets up the navigation for the app.
+ */
 @Composable
-fun MyApp(){
+fun MyApp() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "firstscreen" ){
-        composable("firstscreen"){
-            FirstScreen {name, age ->
-                navController.navigate("secondscreen/$name $age")
-            }
 
+    NavHost(navController = navController, startDestination = "firstscreen") {
+        composable("firstscreen") {
+            FirstScreen { name, age ->
+                navController.navigate("secondscreen/$name/$age")
+            }
         }
-        composable("secondscreen/{name} {age}"){
-            val name = it.arguments?.getString("name")?:"No namee"
-            val age = it.arguments?.getString("age")?:0
-            SecondScreen (name, age){
+        composable("secondscreen/{name}/{age}") { backStackEntry ->
+            val name = backStackEntry.arguments?.getString("name") ?: "No name"
+            val age = backStackEntry.arguments?.getString("age")?.toIntOrNull() ?: 0
+            SecondScreen(name, age) {
                 navController.navigate("thirdscreen")
             }
         }
-        composable("thirdscreen"){
+        composable("thirdscreen") {
             ThirdScreen {
                 navController.navigate("firstscreen")
             }
